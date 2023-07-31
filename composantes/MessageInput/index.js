@@ -4,7 +4,7 @@ import styles from './style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 
-const MessageInput = ({onSendMessage}) => {
+const MessageInput = ({onSendMessage, userId}) => {
   const [message, setMessage] = useState('');
 
   const handleSendMessage = async () => {
@@ -13,12 +13,10 @@ const MessageInput = ({onSendMessage}) => {
         onSendMessage(message); // Cela appelle la fonction sendCustomMessage du parent
         setMessage('');
         
-        const response = await axios.post(
-          'http://192.168.193.168:8000/api/messages',
-          {
-            content: message,
-          },
-        );
+        const response = await axios.post('http://192.168.1.51/api/messages', {
+          content: message,
+          user_id: userId,
+        });
 
         console.log(response.data.content);
 

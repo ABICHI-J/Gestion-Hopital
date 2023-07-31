@@ -14,9 +14,7 @@
       // Effectuer une requête GET à l'API pour récupérer les messages
       const fetchMessages = async () => {
         try {
-          const response = await axios.get(
-            'http://192.168.193.168:8000/api/messages',
-          );
+          const response = await axios.get('http://192.168.1.51/api/messages');
 
           // console.log('MessageDetails ' + JSON.stringify(response));
           // console.log(response.data.data);
@@ -37,6 +35,9 @@
       setMessages([...messages, newMessage]);
     };
 
+    // Assurez-vous que vous avez l'ID de l'utilisateur disponible ici
+    const userId = messages.user_id;
+
     return (
       <View style={{flex: 1}}>
         <FlatList
@@ -46,7 +47,7 @@
             return <Message item={item} />;
           }}
         />
-        <MessageInput onSendMessage={sendCustomMessage} />
+        <MessageInput onSendMessage={sendCustomMessage} userId={userId} />
       </View>
     );
   };
