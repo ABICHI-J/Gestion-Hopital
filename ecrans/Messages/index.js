@@ -12,7 +12,7 @@ const Messages = ({navigation}) => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get('http://192.168.1.51:8000/api/chats');
+        const response = await axios.get('http://192.168.10.15:8000/api/chats');
 
         setChats(response.data.data);
       } catch (error) {

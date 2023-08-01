@@ -9,12 +9,15 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await axios.post('http://192.168.1.51:8000/api/register', {
-        name: name,
-        email: email,
-        password: password,
-        // role: 'normal', // 'normal' pour un utilisateur normal, vous pouvez également utiliser 'doctor' pour un médecin
-      });
+      const response = await axios.post(
+        'http://192.168.10.15:8000/api/register',
+        {
+          name: name,
+          email: email,
+          password: password,
+          // role: 'normal', // 'normal' pour un utilisateur normal, vous pouvez également utiliser 'doctor' pour un médecin
+        },
+      );
 
       // Traitez la réponse si nécessaire, par exemple, affichez un message de succès
       console.log(response.data);

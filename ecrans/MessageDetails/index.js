@@ -14,7 +14,7 @@
       // Effectuer une requête GET à l'API pour récupérer les messages
       const fetchMessages = async () => {
         try {
-          const response = await axios.get('http://192.168.1.51/api/messages');
+          const response = await axios.get('http://192.168.10.15/api/messages');
 
           // console.log('MessageDetails ' + JSON.stringify(response));
           // console.log(response.data.data);

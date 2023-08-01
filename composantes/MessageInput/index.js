@@ -13,7 +13,7 @@ const MessageInput = ({onSendMessage, userId}) => {
         onSendMessage(message); // Cela appelle la fonction sendCustomMessage du parent
         setMessage('');
         
-        const response = await axios.post('http://192.168.1.51/api/messages', {
+        const response = await axios.post('http://192.168.10.15/api/messages', {
           content: message,
           user_id: userId,
         });

@@ -5,7 +5,16 @@ import axios from 'axios';
 const Logout = () => {
   const handleLogout = async () => {
     try {
-      const response = await axios.post('http://192.168.1.51:8000/api/logout');
+      // Récupérez le token depuis le stockage local ou l'endroit où vous le stockez
+      const monToken = 'votre_token_ici';
+      const response = await axios.post(
+        'http://192.168.10.15:8000/api/logout',
+        {
+          headers: {
+            Authorization: `Bearer ${monToken}`,
+          },
+        },
+      );
 
       // Traitez la réponse si nécessaire, par exemple, affichez un message de succès
       console.log(response.data);
