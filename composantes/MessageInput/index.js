@@ -1,29 +1,18 @@
 import {View, TouchableOpacity, TextInput} from 'react-native';
 import React, {useState} from 'react';
+import baseUrl from '../../api';
+import {useSelector} from 'react-redux';
 import styles from './style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import axios from 'axios';
 
-const MessageInput = ({onSendMessage, userId}) => {
-  const [message, setMessage] = useState('');
 
-  const handleSendMessage = async () => {
+const MessageInput = ({onSendMessage}) => {
+  const [message, setMessage] = useState(''); 
+
+  const handleSendMessage = () => {
     if (message.trim() !== '') {
-      try {
-        onSendMessage(message); // Cela appelle la fonction sendCustomMessage du parent
-        setMessage('');
-        
-        const response = await axios.post('http://192.168.10.15/api/messages', {
-          content: message,
-          user_id: userId,
-        });
-
-        console.log(response.data.content);
-
-        
-      } catch (error) {
-        console.error(error);
-      }
+      onSendMessage(message); // Appel à la fonction du parent
+      setMessage(''); // Réinitialise le champ de saisie du message
     }
   };
   return (

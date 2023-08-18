@@ -6,28 +6,33 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import {COLORS} from '../../outils/constantes';
 dayjs.extend(relativeTime);
 
-const Message = ({item}) => {
-  const isMine = () => {
-    return item;
-  };
+const Message = ({item, myUserId}) => {
+
+
+  const fromUserId = item.from_user_id;
+
+  console.log('fromUserId:', fromUserId);
+  console.log('myUserId:', myUserId);
+  const isMine = fromUserId === myUserId;
+
   return (
     <View
       style={[
         styles.container,
         {
-          backgroundColor: isMine() ? COLORS.main : 'white',
-          alignSelf: isMine() ? 'flex-end' : 'flex-start',
+          backgroundColor: isMine ? COLORS.main : 'white',
+          alignSelf: isMine ? 'flex-end' : 'flex-start',
         },
       ]}>
       <Text
         style={{
-          color: isMine() ? 'white' : 'black',
+          color: isMine ? 'white' : 'black',
         }}>
-        {item.content}
+        {item.message}
       </Text>
       <Text
         style={{
-          color: isMine() ? 'blue' : 'blue',
+          color: isMine ? 'blue' : 'blue',
         }}>
         {dayjs(item.created_at).fromNow(true)}
       </Text>

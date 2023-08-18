@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginRight: 5,
   },
-  fontColor: {
+  fontColorBlack: {
     color: COLORS.black,
   },
 });

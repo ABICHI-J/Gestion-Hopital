@@ -31,8 +31,11 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     marginBottom: 1,
   },
-  userNumber: {
+  fontColorBlack: {
     color: COLORS.black,
+  },
+  fontColorGrey: {
+    color: COLORS.grey,
   },
 });
 

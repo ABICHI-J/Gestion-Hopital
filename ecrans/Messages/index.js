@@ -1,27 +1,35 @@
-import {FlatList} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {fakeChats} from '../../fakeData/fakeChat';
-import MessagesList from '../../composantes/MessageList';
-import styles from './style';
+import {FlatList} from 'react-native';
 import axios from 'axios';
+import baseUrl from '../../api';
+import {useSelector} from 'react-redux';
+import MessagesList from '../../composantes/MessagesList';
+import styles from './style';
 
 const Messages = ({navigation}) => {
 
   const [chats, setChats] = useState([]);
+  const token = useSelector(state => state.auth.token);
 
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get('http://192.168.10.15:8000/api/chats');
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
 
-        setChats(response.data.data);
+        const response = await axios.get(baseUrl + 'api/user/showAll', config);
+
+        // console.log(response.data.users)
+        setChats(response.data.users);
       } catch (error) {
         console.error(error);
         }
     };
-
     fetchChats();
-  }, []);
+  }, [token]);
 
   return (
     <FlatList

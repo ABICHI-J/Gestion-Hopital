@@ -1,3 +1,4 @@
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,7 +7,10 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import axios from 'axios';
+import baseUrl from '../../api';
+import {useDispatch, useSelector} from 'react-redux';
+import {setUserInfo} from '../../redux/actions/authActions';
 import dashboardStyles from './style.js';
 import {fakeActivity} from '../../fakeData/fakeActivity.js';
 import ActivityItem from '../../composantes/ActivityItem/index.js';
@@ -15,15 +19,38 @@ import SymptomItem from '../../composantes/SymptomItem/index.js';
 import {fakeDoctor} from '../../fakeData/fakeDoctor.js';
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  const token = useSelector(state => state.auth.token);
+  const userInfo = useSelector(state => state.auth.userInfo);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const response = await axios.get(baseUrl + 'api/user/show', config);
+
+        dispatch(setUserInfo(response.data));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserInfo();
+  }, [dispatch, token]);
+
   return (
     <ScrollView>
       {/*Début du header*/}
+
       <View style={dashboardStyles.header}>
-        <Text style={dashboardStyles.userName}>
-          Jairo Jonas
-        </Text>
+        <Text style={dashboardStyles.userName}>{userInfo.name}</Text>
         <Image
-          source={require('./../../assets/img/user.jpg')}
+          source={{uri: `${baseUrl}${userInfo.photo}`}}
           style={dashboardStyles.userImg}
         />
       </View>
@@ -68,9 +95,7 @@ const Home = () => {
       {/* Docteurs list  */}
 
       <View style={dashboardStyles.title_space_between}>
-        <Text style={dashboardStyles.titleBold}>
-          Nos Docteurs
-        </Text>
+        <Text style={dashboardStyles.titleBold}>Nos Docteurs</Text>
         <TouchableOpacity>
           <Text style={dashboardStyles.link}>Afficher tout</Text>
         </TouchableOpacity>

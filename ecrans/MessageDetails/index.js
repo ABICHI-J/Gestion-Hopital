@@ -1,55 +1,83 @@
-  import {View, FlatList} from 'react-native';
-  import React, {useEffect, useState} from 'react';
-  import {fakeConversation} from '../../fakeData/fakeConversation';
-  import Message from '../../composantes/Message';
-  import MessageInput from '../../composantes/MessageInput';
-  import axios from 'axios';
-  const MessageDetails = ({route, navigation}) => {
-    const {item} = route.params;
-    const [messages, setMessages] = useState([]);
+import {View, FlatList} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
+import baseUrl from '../../api';
+import Message from '../../composantes/Message';
+import MessageInput from '../../composantes/MessageInput';
+import axios from 'axios';
+const MessageDetails = ({route, navigation}) => {
+  const {item} = route.params;
+  const [messages, setMessages] = useState([]);
+  const token = useSelector(state => state.auth.token);
+  const userInfo = useSelector(state => state.auth.userInfo);
 
-    useEffect(() => {
-      navigation.setOptions({title: item.fullname});
+  useEffect(() => {
+    navigation.setOptions({title: item.name});
 
-      // Effectuer une requête GET à l'API pour récupérer les messages
-      const fetchMessages = async () => {
-        try {
-          const response = await axios.get('http://192.168.10.15/api/messages');
+    const fetchMessages = async () => {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
 
-          // console.log('MessageDetails ' + JSON.stringify(response));
-          // console.log(response.data.data);
-          setMessages(response.data.data); // Supposons que l'API renvoie un objet avec la propriété "data" contenant les messages
-        } catch (error) {
-          console.error(error);
-          // Gérer l'erreur ici, par exemple, afficher un message d'erreur à l'utilisateur ou effectuer une action spécifique en cas d'erreur
-        }
-      };
+        const response = await axios.get(baseUrl + 'api/messages/get', {
+          ...config,
+          params: {
+            to_user_id: item.id,
+          },
+        });
 
-      fetchMessages();
-    }, []);
-
-    const sendCustomMessage = message => {
-      const newMessage = {
-        content: message,
-      };
-      setMessages([...messages, newMessage]);
+        console.log(response.data.messages);
+        setMessages(response.data.messages);
+      } catch (error) {
+        console.error(error);
+      }
     };
+    fetchMessages();
+  }, [token, setMessages]);
 
-    // Assurez-vous que vous avez l'ID de l'utilisateur disponible ici
-    const userId = messages.user_id;
+  const sendCustomMessage = async message => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
-    return (
-      <View style={{flex: 1}}>
-        <FlatList
-          data={messages}
-          keyExtractor={item => item.id} // Assurez-vous que l'id est une chaîne de caractères}
-          renderItem={({item}) => {
-            return <Message item={item} />;
-          }}
-        />
-        <MessageInput onSendMessage={sendCustomMessage} userId={userId} />
-      </View>
-    );
+      const body = {
+        to_user_id: item.id,
+        message: message,
+      };
+
+      const response = await axios.post(
+        baseUrl + 'api/messages/send',
+        body,
+        config,
+      );
+      const newMessage = response.data.data;
+      // console.log(newMessage)
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+
+      console.log('New message added:', newMessage);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  export default MessageDetails;
+  return (
+    <View style={{flex: 1}}>
+      <FlatList
+        data={messages}
+        keyExtractor={item => item.id}
+        renderItem={({item}) => {
+          return <Message item={item} myUserId={userInfo.id} />;
+        }}
+      />
+      <MessageInput onSendMessage={sendCustomMessage} />
+    </View>
+  );
+};
+
+export default MessageDetails;
